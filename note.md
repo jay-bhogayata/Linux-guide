@@ -323,3 +323,208 @@ type foo #display how foo is interpreted
 ```
 
 [bash manual](https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#What-is-Bash_003f)
+
+
+### redirection
+
+```sh
+cat #concatenate files and print on the standard output
+sort #sort lines of text files
+uniq #report or omit repeated lines
+grep #print lines matching a pattern
+wc #print newline, word, and byte counts for each file
+head #output the first part of files
+tail #output the last part of files
+tee #read from standard input and write to standard output and files
+```
+
+- stdin : standard input this is file descriptor 0 that is not saved on disk but it is displayed on the screen.this takes the input from the user.default it is keyboard.
+
+- stdout : standard output this is file descriptor 1 that is not saved on disk but it is displayed on the screen.this shows the output of the command.
+
+- stderr : standard error this is file descriptor 2 that is not saved on disk but it is displayed on the screen.this shows the error of the command.
+
+- i/o redirection : we can redirect the input and output of the command to the file or to the another command.(by default i/o input is keyboard and i/o output is terminal)
+
+```sh
+ls -l /usr/bin > ls-output.txt #redirect output to file
+```
+
+- Simply using the redirection operator with no command preceding it will truncate an existing file or create a new, empty file.
+
+- when we redirect the output to the file it will overwrite the file if it already exist.
+
+- `>>` will append the output to the file.
+
+```sh
+ls -l /usr/bin >> ls-output.txt #append output to file
+```
+
+- redirection to stderr using `2>` operator. here 2 is file descriptor for stderr.
+
+```sh
+ls -l /bin/usr 2> ls-error.txt #redirect stderr to file
+```
+
+```sh
+ls -l /bin/usr > ls-output.txt 2>&1 #redirect stderr to stdout to same file
+ls -l /bin/usr &> ls-output.txt #redirect stderr to stdout to same file 
+```
+
+- /dev/null is a special file that discards all data written to it but reports that the write operation succeeded. it is used to discard unwanted output of program.
+
+```sh
+ls -l /bin/usr > /dev/null #discard output
+```
+
+- in missing of argument cat will read from stdin and display on the screen.
+
+```sh
+cat #display keyboard input on the screen (ctrl + d to exit)
+cat files... #concatenate files and display on the screen 
+cat < file #display file on the screen
+cat file1 file2 > file3 #concatenate file1 and file2 and write to file3
+cat file >> file2 #append file to file2
+cat file1 file2 file3 > file4 #concatenate files and write to file4
+```
+
+- pipe operator `|` is used to redirect the output of one command to another command.
+
+```sh
+ls -l /usr/bin | less #display output of ls -l /usr/bin in less command
+
+#####
+command2 > file
+command1 | command2 | command3 | ... | commandN
+```
+
+- redirection operator connects a command with a file while the pipeline operator connects the output of one command with the input of a second command.
+
+- The lesson here is that the redirection operator silently creates or overwrites files,so you need to treat it with a lot of respect. If you want to avoid accidentally overwriting a file, you can use the noclobber option. When this option is set, you cannot use the redirection operator to overwrite an existing file. You can still use the redirection operator to append to an existing file, however.
+
+```sh
+set -o noclobber #set noclobber option
+set +o noclobber #unset noclobber option
+```
+- filtering
+
+```sh
+ls /bin /usr/bin | sort | less
+```
+
+```sh
+# uniq command : report or omit repeated lines
+ls /bin /usr/bin | sort | uniq | less
+
+ls /bin /usr/bin | sort | uniq -d| less # display duplicate lines
+```
+```sh
+# wc command : print newline, word, and byte counts for each file
+
+wc /etc/passwd #display newline, word, and byte counts for each file
+
+ls /etc/passwd | sort | uniq | wc -l
+```
+
+```sh
+# grep command : print lines matching a pattern
+ls /bin /usr/bin | sort | uniq | grep zip
+```
+
+```sh
+head -n 5 output.txt
+tail -n 5 output.txt
+ls /usr/bin | tail -n 5
+tail -f /var/log/messages #display last 10 lines of file and keep watching for new lines
+```
+
+```sh
+# tee command : read from standard input and write to standard output and files
+ls /usr/bin | tee ls.txt | grep zip
+```
+
+
+
+```sh
+echo "hello world" # display hello world on the screen
+```
+
+### expansion
+
+
+- expansion : bash perform several types of expansion when it reads a command line. it performs brace expansion, tilde expansion, parameter and variable expansion, command substitution, arithmetic expansion, word splitting, and pathname expansion. 
+
+```sh
+echo * #display all files and directories in current directory
+echo a* #display all files and directories in current directory starting with a
+echo *.txt #display all files and directories in current directory ending with .txt
+echo [[:lower:]]* #display all files and directories in current directory starting with lowercase
+echo /usr/*/share #display all directories in /usr that have a share subdirectory
+echo .* #display all hidden files and directories in current directory
+echo .[!.]* #display all hidden files and directories in current directory except . and .. 
+echo ~ #display home directory
+echo ~root #display home directory of root user
+```
+
+```sh
+# arithmetic expansion
+echo $((expression)) #perform arithmetic expansion + , - , * , / , % , ** , ++ , -- , < , > , <= , >= , == , != , && , ||
+```
+
+```sh
+# brace expansion
+echo {a,b,c} #display a b c
+echo {1..10} #display 1 2 3 4 5 6 7 8 9 10
+echo {001..10} #display 1 2 3 4 5 6 7 8 9 10
+echo {z..a}
+echo a{A{1,2},B{3,4}}b #display aA1b aA2b aB3b aB4b
+
+mkdir {20010..2020}-{01..12} 
+```
+
+```sh
+# parameter expansion
+echo $HOME #display home directory
+echo $PATH #display path
+echo $USER #display username
+printenv #display all environment variables
+```
+
+```sh
+# command substitution
+echo $(ls)
+echo ls -l $(which cp)
+```
+
+### quoting and escaping
+
+```sh
+echo my name is    jay #display my name is jay (remove extra spaces)
+echo "my name is    jay" #display my name is    jay (do not remove extra spaces)
+echo bill $100.00 #display bill .00 (remove extra spaces) treat $100.00 as variable
+echo "$USER $((2+2)) $(cal)" 
+
+echo $(cal) 
+echo "$(cal)"
+```
+
+- if we need to suppress all the expansions we can use single quotes.
+
+```sh
+echo '$USER $((2+2)) $(cal)'
+```
+
+```sh
+# escaping
+`\a` #alert
+`\b` #backspace
+`\e` #escape
+`\f` #form feed
+`\n` #newline
+`\r` #carriage return
+`\t` #horizontal tab
+`\v` #vertical tab
+`\\` #backslash
+`\nnn` #octal value of character
+`\xnn` #hexadecimal value of character
+```
