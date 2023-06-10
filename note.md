@@ -528,3 +528,46 @@ echo '$USER $((2+2)) $(cal)'
 `\nnn` #octal value of character
 `\xnn` #hexadecimal value of character
 ```
+
+### Advance keyboard tricks
+
+- `clear` command will clear the screen. or we can use `ctrl + l` to clear the screen.
+- `history` command will display all the commands that we have executed.
+
+- **cursor movement**
+
+- `ctrl + a` will move cursor to the beginning of the line.
+- `ctrl + e` will move cursor to the end of the line.
+- `ctrl +f ` will move cursor forward one character.
+- `ctrl + b` will move cursor backward one character.
+- `alt + f` will move cursor forward one word.
+- `alt + b` will move cursor backward one word.
+
+- **modifying text**
+
+- `ctrl + d` will delete character under the cursor.  
+- `ctrl + t` will transpose character under the cursor with the one to the left of the cursor.
+- `alt + t` will transpose word under the cursor with the one to the left of the cursor.
+- `alt + u` will convert characters from the cursor to the end of the word to uppercase.
+- `alt + l` will convert characters from the cursor to the end of the word to lowercase. 
+
+- **cut and paste**
+
+- `ctrl + k` will cut text from the cursor to the end of the line.
+- `ctrl + u` will cut text from the cursor to the beginning of the line.
+- `alt + d` will cut text from the cursor to the end of the current word.
+- `alt + backspace` will cut text from the cursor to the beginning of the current word.
+- `ctrl + y` will paste text that was previously cut.
+
+- use tab to autocomplete commands.
+- `alt+? ` will display all the possible commands that can be used with the current command.
+- `alt + *` will display all the possible files that can be used with the current command.
+
+- `history | less` command will display all the commands that we have executed.
+- `!n` will execute the nth command from the history.
+
+- `ctrl + r` will search the history for a command that matches the characters you have entered so far on the command line.
+- `ctrl + g` will cancel the search and restore the original line.
+- `ctrl + j` will execute the command found by ctrl + r.
+- `!!` will execute the last command.
+- `script` command will record everything that we type in the terminal. `ctrl + d` will stop recording.
