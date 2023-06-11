@@ -572,7 +572,7 @@ echo '$USER $((2+2)) $(cal)'
 - `!!` will execute the last command.
 
 
-### 
+### permissions
 
 - linux is multi user operating system. each user has a unique username and password. each user has a unique user id. each user belongs to a group. each group has a unique group id. each file and directory has an owner and group. each file and directory has a set of permissions that determine what users can do with it.
 
@@ -683,3 +683,96 @@ chown jay: foo.txt #change the owner of the file to jay and group to the primary
 - chgrp command is used to change the group of a file or directory it is similar to chown command and works in the same way.
 
 - `passwd user` command is used to change the password of a user account. if no user name is specified, it will change the password of the current user account.
+
+
+### Processes
+
+- all modern os is usually do multitasking they really do not do this they just switch between tasks so quickly that it appears that they are doing multiple tasks at the same time.(think about multi core cpu)
+
+- linux kernel manage this through use of processes. 
+
+- a process is an instance of a program that is being executed. a process has its own memory space, system resources, and unique process id.
+
+- During system startup, the kernel initiates its own activities and launches a program called "init." Init runs a series of shell scripts located in /etc, known as init scripts, which start system services. These services often run as daemon programs, functioning in the background without a user interface. This allows the system to remain busy and perform routine tasks even when no user is logged in.
+
+-  In the process scheme, this ability for a program to launch other programs is represented by a parent process creating a child process.
+
+- init has process id 1. init is the parent of all processes.
+
+- `ps` command is used  to display information about the currently running processes.
+
+```sh
+ps
+PID TTY          TIME CMD
+6713 pts/0    00:00:00 zsh
+7500 pts/0    00:00:00 ps
+# tty is short for teletype refers to the terminal that the process is running on.
+# time is the total amount of CPU time that the process has used since it started.
+
+px x #display the processes associated with the current user.
+
+# ? indicate no controlling terminal
+# STAT column indicate the current status of the process
+# S : sleeping
+# R : running
+# T : stopped
+# Z : zombie
+# D : uninterruptible sleep
+# W : paging
+# < : high priority
+# N : low priority
+```
+
+```bash
+ps aux #display all processes running on the system
+
+# USER User ID. This is the owner of the process.
+# PID Process ID. This is a unique number that identifies the process.
+# %CPU CPU usage in percent.
+# %MEM Memory usage in percent.
+# VSZ Virtual memory size.
+# RSS Resident Set Size. The amount of physical memory (RAM) the process is using in kilobytes.
+# START Time when the process started. For values over 24 hours, a date isused.
+```
+
+- `top` command is used to display the currently running processes and their resource usage dynamically. update the information every 3 seconds by default.
+- use `q` to quit from top command. and `h` to display the help.
+
+
+- `xlogo` command is used to display the xlogo program. xlogo is a simple program that displays the X Window System logo.
+
+- `ctrl - c` is used to interrupt a process. not all processes can be interrupted. by `ctrl - c` command.
+
+- `xlogo & [1] 28236` command is used to run a process in the background. the process id of the background process is displayed in the square brackets. here 28236 is the process id of the xlogo process. and 1 is the job number.using ps command we can see the process.
+
+- `jobs` command is used to display the currently running background processes.
+
+- `fg` command is used to bring a background process to the foreground. in our case `fg %1` command will bring the xlogo process to the foreground.
+
+- `ctrl - z` command is used to suspend a process. the process is suspended and the shell prompt is displayed. the process can be resumed by using the `fg` command. now we can use `bg` command to resume the process in the background. or we can use `fg` command to resume the process in the foreground.
+
+- `kill` command is used to send a signal to a process. by default, the TERM signal is sent to the process. the TERM signal is used to terminate a process. the TERM signal can be ignored by the process. if the process does not terminate, then the KILL signal can be sent to the process. the KILL signal cannot be ignored by the process. the KILL signal will terminate the process.
+
+```sh
+kill [-signal] pid #send a signal to a process
+kill -9 28236 #send the KILL signal to the process 9 is the signal number of the KILL signal
+```
+- `1` is the signal number of the HUP signal. the HUP signal is used to reload the configuration of a process. the HUP signal can be ignored by the process.
+- `2` is the signal number of the INT signal. the INT signal is used to interrupt a process. the INT signal can be ignored by the process.
+- `15` is the signal number of the TERM signal. the TERM signal is used to terminate a process. the TERM signal can be ignored by the process.
+- `9` is the signal number of the KILL signal. the KILL signal is used to terminate a process. the KILL signal cannot be ignored by the process. this signal is used as a last resort to terminate a process.
+- `18` is the signal number of the CONT signal. the CONT signal is used to resume a process that has been suspended.
+- `19` is the signal number of the STOP signal. the STOP signal is used to suspend a process. the STOP signal cannot be ignored by the process.
+
+- use `kill -l` command to display the list of signals.
+
+- `killall` command is used to send a signal to a process by name. by default, the TERM signal is sent to the process. the TERM signal is used to terminate a process. the TERM signal can be ignored by the process. if the process does not terminate, then the KILL signal can be sent to the process. the KILL signal cannot be ignored by the process. the KILL signal will terminate the process.
+
+```sh
+killall [-signal] process_name #send a signal to a process by name
+killall -9 xlogo #send the KILL signal to the xlogo process
+```
+
+- `pstree` command is used to display the processes in a tree format. the parent process is displayed above the child process.
+
+- `vmstat` command is used to display the virtual memory statistics. the vmstat command displays information about the system's virtual memory, swap space, disk I/O, and CPU usage. the vmstat command displays a summary of the system's virtual memory statistics. the vmstat command displays a summary of the system's swap space statistics. the vmstat command displays a summary of the system's disk I/O statistics. the vmstat command displays a summary of the system's CPU usage statistics.
