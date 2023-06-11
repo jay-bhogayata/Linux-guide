@@ -570,4 +570,116 @@ echo '$USER $((2+2)) $(cal)'
 - `ctrl + g` will cancel the search and restore the original line.
 - `ctrl + j` will execute the command found by ctrl + r.
 - `!!` will execute the last command.
-- `script` command will record everything that we type in the terminal. `ctrl + d` will stop recording.
+
+
+### 
+
+- linux is multi user operating system. each user has a unique username and password. each user has a unique user id. each user belongs to a group. each group has a unique group id. each file and directory has an owner and group. each file and directory has a set of permissions that determine what users can do with it.
+
+- `id` command will display the current user id and group id.
+- user account information is stored in `/etc/passwd` file.in that the info like user name, user id, group id, home directory, login shell, etc are stored.
+- user group information is stored in `/etc/group` file. in that the info like group name, group id, group members are stored.
+- super user has 0 as user id and group id. su stands for super user. su is used to switch to root user.
+
+
+```sh
+-rw-rw-r-- 1 jay jay 22 Jun 11 12:32 foo.txt
+
+# first 10 ch are file attributes
+
+# first ch : file type
+# - : regular file
+# d : directory
+# l : symbolic link
+# c : character device such as keyboard, mouse, etc
+# b : block device such as hard disk, usb, etc
+
+#next 3 ch : owner permissions
+#next 3 ch : group permissions
+#next 3 ch : other(world) permissions
+```
+
+- `r`:
+  - file : allow to open and read the file
+  - directory : allow to list the contents of the directory if execute permission is also set
+- `w`:
+  - file : allow to modify the file but not rename or delete it is determined by the permissions of the directory containing the file
+  - directory : allow to create, delete, and rename files in the directory if execute permission is also set
+- `x`:
+  - file : allow to execute the file if it is a program or script
+  - directory : allow to access the directory and its contents, provided the name of the file is known (read permission is required to access the directory).
+
+- symbolic like have dummy permissions. the actual permissions are stored in the file to which the symbolic link points.
+
+- `chmod` command is used to change the permissions of a file or directory.
+- `x` is value 1, `w` is value 2, `r` is value 4. we can add these values to get the desired permission.
+
+```sh
+chmod 777 foo.txt #give all permissions to all users
+chmod 755 foo.txt #give read, write, execute permissions to owner and read, execute permissions to group and other users
+chmod 644 foo.txt #give read, write permissions to owner and read permissions to group and other users
+chmod 600 foo.txt #give read, write permissions to owner and no permissions to group and other users
+```
+
+- `u` is for user, `g` is for group, `o` is for other, `a` is for all.
+
+```sh
+u+x #give execute permission to user
+u-x #remove execute permission from user
++x #give execute permission to all users
+o-rw #remove read and write permissions from other users
+go=rw #set the read and write permissions for the group owner and anyone besides the owner. If either the group owner or world previously had execute permissions, they are removed.
+u+x,go=rx #give execute permission to the user and set the read and execute permissions for the group owner and anyone besides the owner.
+```
+
+-`umask` command is used to set the default permissions for newly created files and directories.
+
+- setuid bit is represented by `s` in the owner execute position. setuid bit is used to allow a program to be executed with the permissions of the owner of the program. setuid bit is ignored for directories.
+
+
+```sh
+chmod u+s foo.txt #set the setuid bit for the owner of the file
+```
+
+- setgid bit is represented by `s` in the group execute position. setgid bit is used to allow a program to be executed with the permissions of the group of the program. setgid bit is ignored for files.
+
+```sh
+chmod g+s foo.txt #set the setgid bit for the group of the file
+```
+
+- sticky bit is represented by `t` in the other execute position. sticky bit is used to allow only the owner of the file or the root user to delete or rename the file. sticky bit is ignored for files.
+
+```sh
+chmod o+t foo.txt #set the sticky bit for the other users
+```
+
+- `su` command is used to switch to another user account. if no user name is specified, it will switch to root user account.
+
+```sh
+su jay #switch to jay user account
+su - #the - option tells su to run a login shell, which means that the user's environment will be loaded. The l option tells su to log in as the specified user, rather than just switch to that user
+```
+
+- use exit command to exit from the current user account and return to the previous user account.
+
+```sh
+su -c "ls -la" user #run the command as another user if user is not provided then it will run as root user
+```
+
+- `sudo` command is used to run a command as another user, by default the root user. sudo command requires the user to enter their password. the user must be in the sudo group to use the sudo command.
+
+- sudo does not require root password. it requires the user's password.
+
+- One important difference between su and sudo is that sudo does not start a new shell, nor does it load another user's environment.
+
+```sh
+chown [owner][:[group]] file #change the owner and group of the file
+chown jay foo.txt #change the owner of the file to jay
+chown jay:users foo.txt #change the owner of the file to jay and group to users
+chown :users foo.txt #change the group of the file to users
+chown jay: foo.txt #change the owner of the file to jay and group to the primary group of jay
+```
+
+- chgrp command is used to change the group of a file or directory it is similar to chown command and works in the same way.
+
+- `passwd user` command is used to change the password of a user account. if no user name is specified, it will change the password of the current user account.
